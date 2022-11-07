@@ -236,7 +236,11 @@ DefaultProjectileWeapon = Class(Weapon) {
 		
             local nrgReq = self:GetWeaponEnergyRequired(bp)
             local nrgDrain = self:GetWeaponEnergyDrain(bp)
-
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG StartEconomyDrain "..repr(self.bp.Label).." -- "..nrgReq)
+            end
+            
             if nrgReq > 0 and nrgDrain > 0 then
 			
                 local time = nrgReq / nrgDrain
@@ -244,10 +248,17 @@ DefaultProjectileWeapon = Class(Weapon) {
                 if time < 0.1 then
                     time = 0.1
                 end
+                
+                --LOG("*AI DEBUG Eco Event for "..nrgReq )
 
                 self.EconDrain = CreateEconomyEvent( self.unit, nrgReq, 0, time, ChargeProgress )
                 self.FirstShot = true
             end
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG EconomyDrain started for "..repr(self.bp.Label) )
+            end
+
         end
     end,
 
@@ -579,9 +590,11 @@ DefaultProjectileWeapon = Class(Weapon) {
     end,
 
     OnWeaponFired = function(self)
-    
-        --LOG("*AI DEBUG DefaultWeapon OnWeaponFired")
 
+        if ScenarioInfo.WeaponStateDialog then
+            LOG("*AI DEBUG DefaultWeapon OnWeaponFired "..repr(self.bp.Label) )
+        end
+        
 		Weapon.OnWeaponFired(self)
 		
     end,
@@ -604,10 +617,12 @@ DefaultProjectileWeapon = Class(Weapon) {
 
             if self.unit.Dead then return end
             
-            --LOG("*AI DEBUG Weapon IdleState")
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon IdleState "..repr(self.bp.Label).." - SetBusy to false" )
+            end
             
-            SetBusy( self.unit, false 
-            )
+            SetBusy( self.unit, false )
+            
             self:WaitForAndDestroyManips()
             
             local bp = self.bp
@@ -623,7 +638,9 @@ DefaultProjectileWeapon = Class(Weapon) {
             end
 
 			if bp.EnergyRequired and bp.EnergyDrainPerSecond then
-				self:StartEconomyDrain()
+                
+                self:ForkThread( self.StartEconomyDrain )
+				--self:StartEconomyDrain()
 			end
             
 			-- if the weapon has fired prior to coming back to Idle, execute the reload timeout
@@ -645,9 +662,11 @@ DefaultProjectileWeapon = Class(Weapon) {
         end,
 
         OnGotTarget = function(self)
-		
-			--LOG("*AI DEBUG Weapon IdleState OnGotTarget")
 
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon IdleState OnGotTarget "..repr(self.bp.Label) )
+            end
+            
             local bp = self.bp
 	
             if (bp.WeaponUnpackLocksMotion != true or (bp.WeaponUnpackLocksMotion == true and not self.unit:IsUnitState('Moving'))) then
@@ -681,9 +700,11 @@ DefaultProjectileWeapon = Class(Weapon) {
         end,
 
         OnFire = function(self)
-		
-			--LOG("*AI DEBUG Weapon IdleState OnFire")
-	
+
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon IdleState OnFire "..repr(self.bp.Label) )
+            end
+            
             local bp = self.bp
 			
             if bp.WeaponUnpacks == true then
@@ -717,9 +738,11 @@ DefaultProjectileWeapon = Class(Weapon) {
         WeaponAimWantEnabled = false,
 
         Main = function(self)
-		
-			--LOG("*AI DEBUG Weapon Unpacking State")
-		
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon Unpacking State "..repr(self.bp.Label).." - SetBusy to true" )
+            end
+            
             SetBusy( self.unit, true )
 
             local bp = self.bp
@@ -746,9 +769,10 @@ DefaultProjectileWeapon = Class(Weapon) {
         end,
 
         OnFire = function(self)
-		
-			--LOG("*AI DEBUG Weapon Unpacking State OnFire")
-
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon Unpacking State OnFire "..repr(self.bp.Label) )
+            end
         end,
     },
 	
@@ -758,9 +782,11 @@ DefaultProjectileWeapon = Class(Weapon) {
         WeaponAimWantEnabled = true,
 
         Main = function(self)
-		
-			--LOG("*AI DEBUG Weapon RackSalvo Charge State")
-			
+
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon RackSalvo Charge State "..repr(self.bp.Label).." - SetBusy to true" )
+			end
+            
             SetBusy( self.unit, true )
 			
             local bp = self.bp
@@ -768,12 +794,22 @@ DefaultProjectileWeapon = Class(Weapon) {
             self:PlayFxRackSalvoChargeSequence(bp)
 			
             if bp.NotExclusive then
+            
+                if ScenarioInfo.WeaponStateDialog then
+                    LOG("*AI DEBUG Weapon RackSalvo Charge for "..repr(self.bp.Label).." - SetBusy to false" )
+                end
+
                 SetBusy( self.unit, false )
             end
             
             WaitSeconds(bp.RackSalvoChargeTime)
             
             if bp.NotExclusive then
+            
+                if ScenarioInfo.WeaponStateDialog then
+                    LOG("*AI DEBUG Weapon RackSalvo Charge for "..repr(self.bp.Label).." - SetBusy to true" )
+                end
+                
                 SetBusy( self.unit, true )
             end
             
@@ -790,9 +826,11 @@ DefaultProjectileWeapon = Class(Weapon) {
         end,
 
         OnFire = function(self)
-		
-			--LOG("*AI DEBUG Weapon RackSalvo Charge OnFire")
 
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon RackSalvo Charge OnFire "..repr(self.bp.Label) )
+            end
+            
         end,
     },
 
@@ -802,9 +840,11 @@ DefaultProjectileWeapon = Class(Weapon) {
         WeaponAimWantEnabled = true,
 
         Main = function(self)
-
-			--LOG("*AI DEBUG Weapon RackSalvo FireReady State")
-
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon RackSalvo FireReady State "..repr(self.bp.Label) )
+            end
+            
             if (self.bp.CountedProjectile == true and self.bp.WeaponUnpacks == true) then
 			
                 SetBusy( self.unit, true )
@@ -838,9 +878,11 @@ DefaultProjectileWeapon = Class(Weapon) {
 		-- while debugging the WeaponUnpackLocksMotion I discovered that if you have the value NeedsUnpack = true in the AI section
 		-- then the weapon will Never do an OnFire() event unless the unit is set to IMMOBILE
         OnFire = function(self)
-
-			--LOG("*AI DEBUG Weapon RackSalvo FireReady OnFire")
-			
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon RackSalvo FireReady OnFire "..repr(self.bp.Label) )
+			end
+            
             if self.WeaponCanFire then
                 LOUDSTATE(self, self.RackSalvoFiringState)
             end
@@ -854,14 +896,23 @@ DefaultProjectileWeapon = Class(Weapon) {
         WeaponAimWantEnabled = true,
 
         Main = function(self)
-
-			--LOG("*AI DEBUG Weapon RackSalvo Firing State for "..repr(self.CurrentRackSalvoNumber) )
-			
-            SetBusy( self.unit, true )
-			
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon RackSalvo Firing State for "..repr(self.bp.Label).." - rack - "..repr(self.CurrentRackSalvoNumber) )
+			end
+            
             local bp = self.bp
             
             local NotExclusive = bp.NotExclusive
+			
+            -- ok -- with multiple weaponed units - this is the command that halts other weapons from firing
+            -- when Exclusive, all other weapons will 'pause' until this function completes
+            SetBusy( self.unit, (not NotExclusive or false) )
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon RackSalvo Firing for "..repr(self.bp.Label).." - SetBusy is "..repr(not NotExclusive or false) )
+            end
+
             
 			if self.RecoilManipulators then
 				self:DestroyRecoilManips()
@@ -935,14 +986,25 @@ DefaultProjectileWeapon = Class(Weapon) {
                         self:PlayFxMuzzleChargeSequence(muzzle)
 						
                         if NotExclusive then
+
+                            if ScenarioInfo.WeaponStateDialog then
+                                LOG("*AI DEBUG Weapon RackSalvo Firing (MuzzleChargeDelay) for "..repr(self.bp.Label).." - SetBusy to false" )
+                            end
+
                             SetBusy( self.unit, false )
                         end
 						
                         WaitSeconds(bp.MuzzleChargeDelay)
-						
+--[[						
                         if NotExclusive then
+
+                            if ScenarioInfo.WeaponStateDialog then
+                                LOG("*AI DEBUG Weapon RackSalvo Firing (MuzzleChargeDelay)  for "..repr(self.bp.Label).." - SetBusy to true" )
+                            end
+                        
                             SetBusy( self.unit, true )
                         end
+--]]
                     end
 					
                     self:PlayFxMuzzleSequence(muzzle)                    
@@ -984,12 +1046,22 @@ DefaultProjectileWeapon = Class(Weapon) {
                     if bp.MuzzleSalvoDelay > 0 then
 					
                         if NotExclusive then
+
+                            if ScenarioInfo.WeaponStateDialog then
+                                LOG("*AI DEBUG Weapon RackSalvo Firing (MuzzleSalvoDelay) for "..repr(self.bp.Label).." - SetBusy to false" )
+                            end
+
                             SetBusy( self.unit, false )
                         end
 						
                         WaitSeconds(bp.MuzzleSalvoDelay)
 						
                         if NotExclusive then
+
+                            if ScenarioInfo.WeaponStateDialog then
+                                LOG("*AI DEBUG Weapon RackSalvo Firing (MuzzleSalvoDelay) for "..repr(self.bp.Label).." - SetBusy to true" )
+                            end
+                        
                             SetBusy( self.unit, true )
                         end
                     end
@@ -1072,9 +1144,11 @@ DefaultProjectileWeapon = Class(Weapon) {
 		end,
 
         OnLostTarget = function(self)
-		
-			--LOG("*AI DEBUG Weapon RackSalvo Firing State OnLostTarget")		
-		
+
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon RackSalvo Firing State OnLostTarget "..repr(self.bp.Label) )		
+            end
+
             Weapon.OnLostTarget(self)
 			
             if self.bp.WeaponUnpacks == true then
@@ -1085,9 +1159,11 @@ DefaultProjectileWeapon = Class(Weapon) {
 
         -- Set a bool so we won't fire if the target reticle is moved
         OnHaltFire = function(self)
-		
-			--LOG("*AI DEBUG Weapon RackSalvo Firing State OnHaltFire")
-			
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon RackSalvo Firing State OnHaltFire "..repr(self.bp.Label) )
+			end
+            
             self.HaltFireOrdered = true
         end,
 		
@@ -1113,9 +1189,11 @@ DefaultProjectileWeapon = Class(Weapon) {
         WeaponAimWantEnabled = true,
 
         Main = function(self)
-		
-			--LOG("*AI DEBUG Weapon RackSalvo Reload State")		
 
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon RackSalvo Reload State "..repr(self.bp.Label).." - SetBusy to true" )		
+            end
+            
             SetBusy( self.unit, true)
 			
             local bp = self.bp
@@ -1125,6 +1203,11 @@ DefaultProjectileWeapon = Class(Weapon) {
             end
 			
             if bp.NotExclusive then
+
+                if ScenarioInfo.WeaponStateDialog then
+                    LOG("*AI DEBUG Weapon RackSalvo Reload "..repr(self.bp.Label).." - SetBusy to false" )
+                end
+
                 SetBusy( self.unit, false )
             end
             
@@ -1133,6 +1216,11 @@ DefaultProjectileWeapon = Class(Weapon) {
             self:WaitForAndDestroyManips()
             
             if bp.NotExclusive then
+            
+                if ScenarioInfo.WeaponStateDialog then
+                    LOG("*AI DEBUG Weapon RackSalvo Reload for "..repr(self.bp.Label).." - SetBusy to true" )
+                end
+
                 SetBusy( self.unit, true )
             end
 
@@ -1182,9 +1270,11 @@ DefaultProjectileWeapon = Class(Weapon) {
         WeaponAimWantEnabled = true,
 
         Main = function(self)
-
-			--LOG("*AI DEBUG Weapon WeaponPacking State")
-			
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon WeaponPacking State "..repr(self.bp.Label) )
+			end
+            
             SetBusy( self.unit, true )
 
 			-- reset the rack count - this is usually done
@@ -1208,9 +1298,11 @@ DefaultProjectileWeapon = Class(Weapon) {
         end,
 
         OnGotTarget = function(self)
-		
-			--LOG("*AI DEBUG Weapon WeaponPacking State OnGotTarget")		
-		
+
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon WeaponPacking State OnGotTarget "..repr(self.bp.Label) )		
+            end
+            
             if not self.bp.ForceSingleFire then
 			
                 LOUDSTATE(self, self.WeaponUnpackingState)
@@ -1222,9 +1314,11 @@ DefaultProjectileWeapon = Class(Weapon) {
         -- Override so that it doesn't play the firing sound when
         -- we're not actually creating the projectile yet
         OnFire = function(self)
-        
-            --LOG("*AI DEBUG Weapon WeaponPackingState OnFire")
-		
+            
+            if ScenarioInfo.WeaponStateDialog then
+                LOG("*AI DEBUG Weapon WeaponPackingState OnFire")
+            end
+            
             if self.bp.CountedProjectile == true and not self.bp.ForceSingleFire then
 			
                 LOUDSTATE(self, self.WeaponUnpackingState)

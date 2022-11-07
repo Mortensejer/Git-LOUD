@@ -1084,7 +1084,9 @@ MobileUnit = Class(Unit) {
 	
 	-- when you start reclaiming
     OnStartReclaim = function(self, target)
-	
+
+        --LOG("*AI DEBUG OnStartReclaim from "..repr(self.BlueprintID).." on target "..repr(target))
+        
         self:DoUnitCallbacks('OnStartReclaim', target)
 		
         self:StartReclaimEffects(target)
@@ -1108,6 +1110,8 @@ MobileUnit = Class(Unit) {
 
 	-- when you stop reclaiming
     OnStopReclaim = function(self, target)
+    
+        --LOG("*AI DEBUG stop reclaim from "..repr(self.BlueprintID).." on target "..repr(target) )
 
         self:DoUnitCallbacks('OnStopReclaim', target)
 
@@ -2951,6 +2955,7 @@ MassCollectionUnit = Class(StructureUnit) {
                             --LOG("*AI DEBUG Production set to "..(massProduction * massprod) )
                             
                             -- BUT production will be set to % of energy required
+                            --LOG("*AI DEBUG mass set to "..massProduction * massprod)
                             SetProductionPerSecondMass( self, (massProduction * massprod ) )
                             
                         else

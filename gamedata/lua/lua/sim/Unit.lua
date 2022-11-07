@@ -309,6 +309,12 @@ Unit = Class(moho.unit_methods) {
 
 		self.CanBeKilled = true
 		self.CanTakeDamage = true
+        
+        GetStat( self, 'REGEN', bp.Defense.RegenRate )
+        
+        self.CurrentRegenRate = bp.Defense.RegenRate
+        
+        SetStat( self, 'REGEN', self.CurrentRegenRate )
 		
         -- would be nice to reivew this as well
         self.DamageEffectsBag = { {}, {}, {}, }
@@ -364,6 +370,8 @@ Unit = Class(moho.unit_methods) {
         SetConsumptionPerSecondMass( self, bp.Economy.MaintenanceConsumptionPerSecondMass or 0 )
 		
         SetProductionPerSecondEnergy( self, bp.Economy.ProductionPerSecondEnergy or 0 )
+
+        --LOG("*AI DEBUG Setting mass "..bp.Economy.ProductionPerSecondMass)
         SetProductionPerSecondMass( self, bp.Economy.ProductionPerSecondMass or 0 )
 
         SetProductionActive( self, true )
@@ -1169,6 +1177,8 @@ Unit = Class(moho.unit_methods) {
 
 	-- when you are reclaimed
     OnReclaimed = function(self, entity)
+    
+        --LOG("*AI DEBUG OnReclaimed "..repr(entity))
 	
         self:DoUnitCallbacks('OnReclaimed', entity)
         --self.CreateReclaimEndEffects( entity, self )
@@ -4277,6 +4287,7 @@ Unit = Class(moho.unit_methods) {
 	-- and self can either be a target unit or the origin unit of the buff
 	-- this makes it very flexible but tricky to read and you need to know where the call
 	-- was made from before you can follow the flow
+
 	-- the allow and disallow parsing has turned out to be problematic as well needing to be seperated by commas
 	-- and not seeming to recognize the '-' (minus) operator
     AddBuff = function(self, buffTable, PosEntity)
@@ -4355,6 +4366,8 @@ Unit = Class(moho.unit_methods) {
         elseif bt == 'HEALTHREGENRATE' then
 		
             self:SetRegenRate(buffTable.Value or 0)
+            
+            self.CurrentRegenRate = val
 			
         end
 
@@ -4806,6 +4819,12 @@ Unit = Class(moho.unit_methods) {
                 self:EnableShield()
 				
                 TrashAdd( self.Trash,self.MyHunkerShield)
+        
+                GetStat( self,'SHIELDHP', 0 )
+                GetStat( self,'SHIELDREGEN', 0 )
+  
+                SetStat(self,'SHIELDHP', bpShield.ShieldMaxHealth )
+                SetStat(self,'SHIELDREGEN', bpShield.ShieldRegenRate)
 
             else
                 LOG('*WARNING: TRYING TO CREATE HUNKER SHIELD ON UNIT ',repr(self.BlueprintID),', but it does not have an OwnerShieldMesh=<meshBpName> defined in the Blueprint.')
@@ -5153,9 +5172,9 @@ Unit = Class(moho.unit_methods) {
         
 		local destRange = VDist2(location[1], location[3], myposition[1], myposition[3])
 		
-		if destRange > (teleRange * 2) then
+		if destRange > (teleRange * 4) then
         
-            LOG("*AI DEBUG OnTeleportUnit "..repr(self.BlueprintID).." to location "..repr(location).." at "..repr(destRange).." - failed - beyond "..(teleRange*2).." range. " )
+            LOG("*AI DEBUG OnTeleportUnit "..repr(self.BlueprintID).." to location "..repr(location).." at "..repr(destRange).." - failed - beyond "..(teleRange*4).." range. " )
 		
 			FloatingEntityText(self.Sync.id,'Destination Out Of Range')
             
@@ -5262,7 +5281,7 @@ Unit = Class(moho.unit_methods) {
         LOG("*AI DEBUG OnTeleportUnit "..repr(self.BlueprintID).." Teleport process begins")
         
 		-- start teleportation sequence --
-        self.TeleportThread = self:ForkThread(self.InitiateTeleportThread, teleporter, bp, location, destRange, teleRange, orientation)
+        self.TeleportThread = self:ForkThread(self.InitiateTeleportThread, teleporter, bp, location, destRange, teleRange, orientation, telecost)
 		
     end,
 	
@@ -5377,7 +5396,7 @@ Unit = Class(moho.unit_methods) {
         self:SetWorkProgress(progress)
     end,
 
-    InitiateTeleportThread = function(self, teleporter, bp, location, teledistance, teleRange, orientation)
+    InitiateTeleportThread = function(self, teleporter, bp, location, teledistance, teleRange, orientation, telecostpaid)
 	
         self:OnTeleportCharging(location)
 	
@@ -5396,8 +5415,12 @@ Unit = Class(moho.unit_methods) {
 		
 			-- calc a resource cost value based on both mass and energy
             local mass = bp.Economy.BuildCostMass * LOUDMIN(.15, bp.Economy.TeleportMassMod or 0.15)				-- ie. 18000 mass becomes 2700
+
             local energy = bp.Economy.BuildCostEnergy * LOUDMIN(.03, bp.Economy.TeleportEnergyMod or 0.03)		-- ei. 5m Energy becomes 60,000
-			
+
+            -- remove the initial E charge already paid
+            energy = LOUDMAX( 0, energy - telecostpaid)
+            
             teleportenergy = mass + energy
 
             if teledistance <= teleRange then

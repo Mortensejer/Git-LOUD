@@ -80,6 +80,19 @@ BuffBlueprint { Name = 'SeraphimRegenFieldMoo',
 }
 
 -- These are LOUD specific buffs
+
+-- This is a 4% mobility penalty
+BuffBlueprint { Name = 'MobilityPenalty',
+	BuffType = 'MOBILITY',
+	Stacks = 'ALWAYS',
+	Duration = -1,
+	Affects = {
+		MoveMult = {
+			Add = 0,
+			Mult = 0.96,
+		},
+	},
+}
 BuffBlueprint { Name = 'AIRSTAGING',
 	BuffType = 'AIRSTAGING',
 	Stacks = 'IGNORE',
@@ -151,57 +164,6 @@ BuffBlueprint { Name = 'DarknessOmniNerf',
 	},
 	EffectsScale = 0.35,
 }
-
--- This buff is for Aeon Maelstrom Field from BAL0402
--- and the Aeon BO ACU
-BuffBlueprint { Name = 'AeonMaelstromField',
-    DisplayName = 'AeonMaelstromField',
-    BuffType = 'DAMAGEAURA',
-    Stacks = 'IGNORE',
-    Duration = 3,	-- this is unique in that it has a duration -- all this does is tell the buff system to keep applying the buff every second while in the field
-    Affects = {
-        Health = {
-			-- damage enemy units every second
-            Add = -40,
-            Mult = 1.0,
-        },
-    },
-	--Effects = {'/mods/BlackopsUnleashed/effects/emitters/genmaelstrom_aura_01_emit.bp'},
-	--EffectsScale = 0.4,
-}
-
-BuffBlueprint { Name = 'AeonMaelstromField2',
-    DisplayName = 'AeonMaelstromField2',
-    BuffType = 'DAMAGEAURA',
-    Stacks = 'IGNORE',
-    Duration = 3,	-- this is unique in that it has a duration -- the buff will be applied every second while in the field
-    Affects = {
-        Health = {
-			-- damage enemy units every second
-            Add = -80,
-            Mult = 1.0,
-        },
-    },
-	--Effects = {'/mods/BlackopsUnleashed/effects/emitters/genmaelstrom_aura_01_emit.bp'},
-	--EffectsScale = 0.65,
-}
-
-BuffBlueprint { Name = 'AeonMaelstromField3',
-    DisplayName = 'AeonMaelstromField3',
-    BuffType = 'DAMAGEAURA',
-    Stacks = 'IGNORE',
-    Duration = 3,	-- this is unique in that it has a duration -- all this does is tell the buff system to keep applying the buff every second while in the field
-    Affects = {
-        Health = {
-			-- damage enemy units every second
-            Add = -120,
-            Mult = 1.0,
-        },
-    },
-	--Effects = {'/mods/BlackopsUnleashed/effects/emitters/genmaelstrom_aura_01_emit.bp'},
-	--EffectsScale = 0.90,
-}
-
 
 BuffBlueprint { Name = 'RegenPackage1',
     BuffType = 'REGENUPGRADE',
@@ -375,6 +337,49 @@ BuffBlueprint { Name = 'INSTALL_T3_Sonar',
 }
 
 
+-- This buff is for Aeon Maelstrom Field from BAL0402 and the Aeon BO ACU
+BuffBlueprint { Name = 'AeonMaelstromField',
+    DisplayName = 'AeonMaelstromField',
+    BuffType = 'DAMAGEAURA',
+    Stacks = 'IGNORE',
+    Duration = 3,	-- this is unique in that it has a duration -- all this does is tell the buff system to keep applying the buff every second while in the field
+    Affects = {
+        Health = {
+			-- damage enemy units every second
+            Add = -40,
+            Mult = 1.0,
+        },
+    },
+}
+
+BuffBlueprint { Name = 'AeonMaelstromField2',
+    DisplayName = 'AeonMaelstromField2',
+    BuffType = 'DAMAGEAURA',
+    Stacks = 'IGNORE',
+    Duration = 3,	-- this is unique in that it has a duration -- the buff will be applied every second while in the field
+    Affects = {
+        Health = {
+			-- damage enemy units every second
+            Add = -75,
+            Mult = 1.0,
+        },
+    },
+}
+
+BuffBlueprint { Name = 'AeonMaelstromField3',
+    DisplayName = 'AeonMaelstromField3',
+    BuffType = 'DAMAGEAURA',
+    Stacks = 'IGNORE',
+    Duration = 3,	-- this is unique in that it has a duration -- all this does is tell the buff system to keep applying the buff every second while in the field
+    Affects = {
+        Health = {
+			-- damage enemy units every second
+            Add = -100,
+            Mult = 1.0,
+        },
+    },
+}
+
 
 --- THESE ARE THE STANDARD VETERANCY BUFFS ---
 
@@ -398,7 +403,7 @@ BuffBlueprint { Name = 'VeterancyHealth2',
     Affects = {
         MaxHealth = {
             Add = 0,
-            Mult = 1.1,	--1.2,	-- 1.18
+            Mult = 1.1,
         },
     },
 }
@@ -410,7 +415,7 @@ BuffBlueprint { Name = 'VeterancyHealth3',
     Affects = {
         MaxHealth = {
             Add = 0,
-            Mult = 1.15, 	--1.3,	-- 1.24
+            Mult = 1.15,
         },
     },
 }
@@ -422,7 +427,7 @@ BuffBlueprint { Name = 'VeterancyHealth4',
     Affects = {
         MaxHealth = {
             Add = 0,
-            Mult = 1.2,	--1.4,	-- 1.28
+            Mult = 1.2,
         },
     },
 }
@@ -434,7 +439,7 @@ BuffBlueprint { Name = 'VeterancyHealth5',
     Affects = {
         MaxHealth = {
             Add = 0,
-            Mult = 1.25,	--5,	-- 1.3
+            Mult = 1.25,
         },
     },
 }
@@ -802,16 +807,16 @@ BuffBlueprint { Name = 'ACU_T2_Engineering',
     Duration = -1,
     Affects = {
         BuildRate = {
-            Add =  20,
-            Mult = 1,
+            Add =  0,
+            Mult = 3,       -- from 10 to 30
 		},
         MaxHealth = {
-            Add = 3000,
-            Mult = 1.0,
+            Add = 0,
+            Mult = 1.35,
         },
         Regen = {
-            Add = 20,
-            Mult = 1.0,
+            Add = 0,
+            Mult = 3.0,     -- from 10 to 30
         },
 	},
 
@@ -824,16 +829,16 @@ BuffBlueprint { Name = 'ACU_T3_Engineering',
     Duration = -1,
     Affects = {
         BuildRate = {
-            Add =  80,
-            Mult = 1,
+            Add =  0,
+            Mult = 9,       -- from 10 to 90
         },
         MaxHealth = {
-            Add = 6000,
-            Mult = 1.0,
+            Add = 0,
+            Mult = 1.65,
         },
         Regen = {
-            Add = 35,
-            Mult = 1.0,
+            Add = 0,
+            Mult = 6.0,     -- from 10 to 60
         },
     },
 }
@@ -845,20 +850,20 @@ BuffBlueprint { Name = 'ACU_T4_Engineering',
     Duration = -1,
     Affects = {
         BuildRate = {
-            Add =  110,
-            Mult = 1,
+            Add =  0,
+            Mult = 15,      -- from 10 to 150
+        },
+        MaxHealth = {
+            Add = 0,
+            Mult = 2.0,
         },
 		MoveMult = {
 			Add = 0,
 			Mult = 1.1,
 		},
-        MaxHealth = {
-            Add = 10000,
-            Mult = 1.0,
-        },
         Regen = {
-            Add = 50,
-            Mult = 1.0,
+            Add = 0,
+            Mult = 10.0,     -- from 10 to 100
         },
     },
 }
@@ -871,130 +876,198 @@ BuffBlueprint { Name = 'ACU_T2_Imp_Eng',
     Duration = -1,
     Affects = {
         BuildRate = {
-            Add =  15,
-            Mult = 1,
+            Add =  0,
+            Mult = 3,       -- from 10 to 30
 		},
 		MassProduction = {
-			Add = 2,
-			Mult = 1,
+			Add = 0,
+			Mult = 2,       -- from 2 to 4
 		},
+		MoveMult = {
+			Add = 0,
+			Mult = 1.06,
+		},        
 		EnergyProduction = {
-			Add = 0,	-- works strangely - actually will add 80 power taking it to 100 - was 11.5 taking Bob to 250
-			Mult = 5,
+			Add = 0,
+			Mult = 5,       -- from 20 to 100
 		},
 	},
 }
 
 BuffBlueprint { Name = 'ACU_T3_Adv_Eng',
     BuffType = 'ACUBUILDRATE',
-	ParsedEntityCategory = categories.COMMAND, --'COMMAND',
+	ParsedEntityCategory = categories.COMMAND,
     Stacks = 'REPLACE',
     Duration = -1,
     Affects = {
         BuildRate = {
-            Add =  65,
-            Mult = 1,
+            Add =  0,
+            Mult = 9,       -- from 10 to 90
         },
-		MassProduction = {
-			Add = 7,
-			Mult = 1,
-		},
 		EnergyProduction = {
-			Add = 0,	-- will add 400 power taking it to 500 - was 74 and took Bob to 1500
+			Add = 0,	    -- from 20 to 500
 			Mult = 25,
 		},
+		MassProduction = {
+			Add = 0,
+			Mult = 5,       -- from 2 to 10
+		},
+		MoveMult = {
+			Add = 0,
+			Mult = 1.12,
+		},        
+        Regen = {
+            Add = 0,
+            Mult = 2,     -- from 20 to 40
+        },        
     },
 }
 
 BuffBlueprint { Name = 'ACU_T4_Exp_Eng',
     BuffType = 'ACUBUILDRATE',
-	ParsedEntityCategory = categories.COMMAND, --'COMMAND',
+	ParsedEntityCategory = categories.COMMAND,
     Stacks = 'REPLACE',
     Duration = -1,
     Affects = {
         BuildRate = {
-            Add =  200,
-            Mult = 1,
+            Add =  0,
+            Mult = 16,      -- from 10 to 160
         },
-		MassProduction = {
-			Add = 13,
-			Mult = 1,
-		},
 		EnergyProduction = {
-			Add = 0,	-- will add 1230 power taking it to 1500 - was 114,
+			Add = 0,	    -- from 20 to 1500
 			Mult = 75,
+		},
+		MassProduction = {
+			Add = 0,
+			Mult = 12,      -- from 2 to 24
 		},
 		MoveMult = {
 			Add = 0,
-			Mult = 1.1,
+			Mult = 1.18,
 		},
+        Regen = {
+            Add = 0,
+            Mult = 3.5,       -- from 20 to 70
+        },
     },
 }
 
 BuffBlueprint { Name = 'ACU_T2_Combat_Eng',
     BuffType = 'ACUBUILDRATE',
-	ParsedEntityCategory = categories.COMMAND, --'COMMAND',
+	ParsedEntityCategory = categories.COMMAND,
     Stacks = 'REPLACE',
     Duration = -1,
     Affects = {
         BuildRate = {
-            Add =  10,
-            Mult = 1,
+            Add =  0,
+            Mult = 2.5,     -- from 10 to 25
         },
         MaxHealth = {
-            Add = 8000,
-            Mult = 1,
+            Add = 0,
+            Mult = 1.3, 
         },
+		MoveMult = {
+			Add = 0,
+			Mult = 0.96,
+		},        
         Regen = {
-            Add = 12,
-            Mult = 1,
+            Add = 0,
+            Mult = 2,       -- from 20 to 40
         },
     },
 }
 
 BuffBlueprint { Name = 'ACU_T3_Combat_Eng',
     BuffType = 'ACUBUILDRATE',
-	ParsedEntityCategory = categories.COMMAND, --'COMMAND',
+	ParsedEntityCategory = categories.COMMAND,
     Stacks = 'REPLACE',
     Duration = -1,
     Affects = {
         BuildRate = {
-            Add =  35,
-            Mult = 1,
+            Add =  0,
+            Mult = 5,       -- from 10 to 50
         },
         MaxHealth = {
-            Add = 25000,
-            Mult = 1.0,
+            Add = 0,
+            Mult = 1.75,
         },
+		MoveMult = {
+			Add = 0,
+			Mult = 0.91,
+		},        
         Regen = {
-            Add = 35,
-            Mult = 1,
+            Add = 0,
+            Mult = 3.5,       -- from 20 to 70
         },
+		MassProduction = {
+			Add = 0,
+			Mult = 2,       -- from 2 to 4
+		},
+		EnergyProduction = {
+			Add = 0,
+			Mult = 5,       -- from 20 to 100
+		},        
     },
 }
 
 BuffBlueprint { Name = 'ACU_T4_Combat_Eng',
     BuffType = 'ACUBUILDRATE',
-	ParsedParsedEntityCategory = categories.COMMAND, --'COMMAND',
+	ParsedParsedEntityCategory = categories.COMMAND,
     Stacks = 'REPLACE',
     Duration = -1,
     Affects = {
         BuildRate = {
-            Add =  80,
-            Mult = 1,
+            Add =  0,
+            Mult = 9,       -- from 10 to 90
         },
         MaxHealth = {
-            Add = 40000,
-            Mult = 1.0,
+            Add = 0,
+            Mult = 2.2,
         },
         Regen = {
-            Add = 60,
-            Mult = 1,
+            Add = 0,
+            Mult = 5,       -- from 20 to 100
         },
 		MoveMult = {
 			Add = 0,
-			Mult = 1.1,
+			Mult = 0.875,
 		},
+		MassProduction = {
+			Add = 0,
+			Mult = 5,       -- from 2 to 10
+		},
+		EnergyProduction = {
+			Add = 0,        -- from 20 to 500
+			Mult = 25,
+		},        
+    },
+}
+
+BuffBlueprint { Name = 'ACU_T3_Intel_Package',
+    BuffType = 'ACUINTELLIGENCE',
+    Stacks = 'ALWAYS',
+    Duration = -1,
+    Affects = {
+		RadarRadius = {
+			Add = 125,
+			Mult = 1.0,
+		},
+        SonarRadius = {
+            Add = 100,
+            Mult = 1.0,
+        },
+		OmniRadius = {
+			Add = 50,
+			Mult = 1.0,
+		},
+        VisionRadius = {
+            Add = 26,
+            Mult = 1.0,
+        },
+        WaterVisionRadius = {
+            Add = 26,
+            Mult = 1.0,
+        },
     },
 }
 

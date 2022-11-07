@@ -97,8 +97,8 @@ UnitBlueprint {
         
         EconomyThreatLevel = 610,
         
-        Health = 29000,
-        MaxHealth = 29000,
+        Health = 27000,
+        MaxHealth = 27000,
         RegenRate = 18,
         
         SurfaceThreatLevel = 36,
@@ -1375,6 +1375,7 @@ UnitBlueprint {
         TechLevel = 'RULEUTL_Experimental',
         UnitWeight = 1,
     },
+    
     Intel = {
         Cloak = true,
         CloakFieldRadius = 0,
@@ -1387,12 +1388,15 @@ UnitBlueprint {
         VisionRadius = 26,
         WaterVisionRadius = 26,
     },
+    
     Interface = {
         HelpText = 'Armored Command Unit',
     },
+    
     LifeBarHeight = 0.15,
     LifeBarOffset = 0.5,
     LifeBarSize = 1.25,
+    
     Physics = {
         BankingSlope = 0,
         BuildOnLayerCaps = {
@@ -1400,25 +1404,28 @@ UnitBlueprint {
         },
         DragCoefficient = 0.2,
         LayerChangeOffsetHeight = -0.95,
-        MaxAcceleration = 1.7,
-        MaxSpeed = 1.5,
+        MaxAcceleration = 1.3,
+        MaxSpeed = 1.3,
         MaxSpeedReverse = 0,
         MaxSteerForce = 12,
         MinSpeedPercent = 0,
         MotionType = 'RULEUMT_Amphibious',
         StandUpright = true,
         TurnRadius = 10,
-        TurnRate = 90,
+        TurnRate = 75,
     },
+    
     SelectionCenterOffsetX = 0,
     SelectionCenterOffsetZ = -0.1,
     SelectionSizeX = 0.7,
     SelectionSizeZ = 0.6,
     SelectionThickness = 0.9,
     SelectionYOffset = 0,
+    
     SizeX = 1,
     SizeY = 2.2,
     SizeZ = 0.7,
+    
     StrategicIconName = 'icon_commander_generic',
     StrategicIconSortPriority = 0,
 	
@@ -1440,6 +1447,86 @@ UnitBlueprint {
         {
             AboveWaterFireOnly = true,
             AboveWaterTargetsOnly = true,
+            Audio = {},
+            BallisticArc = 'RULEUBA_None',
+			
+            BeamCollisionDelay = 0.1,
+            BeamLifetime = 0.1,
+			
+            CollideFriendly = false,
+			
+            Damage = 0.1,
+            DamageRadius = 0,
+            DamageType = 'Normal',
+			
+            DisplayName = 'Target Designator',
+			
+            FireTargetLayerCapsTable = {
+                Land = 'Air|Land|Water|Seabed',
+                Seabed = 'Air|Land|Water|Seabed',
+                Water = 'Air|Land|Water|Seabed',
+            },
+            FiringTolerance = 5,
+			
+            HeadingArcCenter = 0,
+            HeadingArcRange = 180,
+			
+            Label = 'EXTargetPainter',
+			
+            MaxRadius = 25, --script must change this to match weapon upgrade range
+			
+            MuzzleChargeDelay = 0,
+            MuzzleSalvoDelay = 0,
+            MuzzleSalvoSize = 1,
+
+            RackBones = {
+                {
+                    MuzzleBones = {
+                        'Turret_Muzzle_02',
+                    },
+                    RackBone = 'Right_Turret',
+                },
+            },
+            RackFireTogether = true,
+            RackRecoilDistance = 0,
+            RackReloadTimeout = 10,
+            RackSalvoChargeTime = 0,
+            RackSalvoReloadTime = 0,
+            RackSalvoSize = 1,
+            RackSlavedToTurret = true,
+
+            RateOfFire = 2,
+			
+            TargetCheckInterval = 0.5,
+			
+            TargetPriorities = {
+                'SPECIALHIGHPRI',
+                'MOBILE',
+                'STRUCTURE DEFENSE',
+                'SPECIALLOWPRI',
+                'ALLUNITS',
+            },
+            TargetRestrictDisallow = 'UNTARGETABLE,SATELLITE',
+
+            TurretBoneMuzzle = 'Turret_Muzzle_02',
+            TurretBonePitch = 'Right_Turret',
+            TurretBoneYaw = 'Torso',
+            TurretDualManipulators = false,
+			
+            TurretPitch = 0,
+            TurretPitchRange = 90,
+            TurretPitchSpeed = 90,
+			
+            TurretYaw = 0,
+            TurretYawRange = 180,
+            TurretYawSpeed = 90,
+			
+            Turreted = true,
+            UseFiringSolutionInsteadOfAimBone = true,
+        },
+        {
+            AboveWaterFireOnly = true,
+            AboveWaterTargetsOnly = true,
             Audio = {
                 Fire = Sound {
                     Bank = 'URLWeapon',
@@ -1450,7 +1537,7 @@ UnitBlueprint {
             BallisticArc = 'RULEUBA_LowArc',
             CollideFriendly = false,
 			
-            Damage = 40,
+            Damage = 35,
             DamageType = 'Normal',
 			
             DisplayName = 'Molecular Ripper Cannon',
@@ -1513,11 +1600,11 @@ UnitBlueprint {
             TurretDualManipulators = false,
 			
             TurretPitch = 0,
-            TurretPitchRange = 90,
+            TurretPitchRange = 4,
             TurretPitchSpeed = 90,
 			
             TurretYaw = 0,
-            TurretYawRange = 180,
+            TurretYawRange = 4,
             TurretYawSpeed = 90,
 			
             Turreted = true,
@@ -1581,7 +1668,7 @@ UnitBlueprint {
             RangeCategory = 'UWRC_DirectFire',
             RateOfFire = 0.1,		--0.2
             TargetCheckInterval = 1,
-            TargetRestrictDisallow = 'UNTARGETABLE, COMMAND, STRUCTURE',
+            TargetRestrictDisallow = 'UNTARGETABLE',
             TurretBoneMuzzle = 'Turret_Muzzle_02',
             TurretBonePitch = 'Right_Turret',
             TurretBoneYaw = 'Torso',
@@ -1973,7 +2060,7 @@ UnitBlueprint {
             BeamCollisionDelay = 0.1,
             BeamLifetime = 0.1,
             CollideFriendly = false,
-            Damage = 0.1,
+            Damage = 0,
             DamageRadius = 0.5,
             DamageType = 'Normal',
             DisplayName = 'EMP Array Emitter',
@@ -2023,10 +2110,10 @@ UnitBlueprint {
             TurretBoneYaw = 'Turret_Muzzle_02',
             TurretDualManipulators = false,
             TurretPitch = 0,
-            TurretPitchRange = 80,
+            TurretPitchRange = 4,
             TurretPitchSpeed = 20,
             TurretYaw = 0,
-            TurretYawRange = 360,
+            TurretYawRange = 4,
             TurretYawSpeed = 30,
             Turreted = true,
             UseFiringSolutionInsteadOfAimBone = true,
@@ -2373,10 +2460,10 @@ UnitBlueprint {
             TurretBoneYaw = 'EMP_Array_Helper',
             TurretDualManipulators = false,
             TurretPitch = 0,
-            TurretPitchRange = 80,
+            TurretPitchRange = 4,
             TurretPitchSpeed = 20,
             TurretYaw = 0,
-            TurretYawRange = 360,
+            TurretYawRange = 4,
             TurretYawSpeed = 30,
             Turreted = true,
             UseFiringSolutionInsteadOfAimBone = true,
@@ -2456,10 +2543,10 @@ UnitBlueprint {
             TurretBoneYaw = 'EMP_Array_Helper',
             TurretDualManipulators = false,
             TurretPitch = 0,
-            TurretPitchRange = 80,
+            TurretPitchRange = 4,
             TurretPitchSpeed = 20,
             TurretYaw = 0,
-            TurretYawRange = 360,
+            TurretYawRange = 4,
             TurretYawSpeed = 30,
             Turreted = true,
             UseFiringSolutionInsteadOfAimBone = true,
@@ -2538,10 +2625,10 @@ UnitBlueprint {
             TurretBoneYaw = 'EMP_Array_Helper',
             TurretDualManipulators = false,
             TurretPitch = 0,
-            TurretPitchRange = 80,
+            TurretPitchRange = 4,
             TurretPitchSpeed = 20,
             TurretYaw = 0,
-            TurretYawRange = 360,
+            TurretYawRange = 4,
             TurretYawSpeed = 30,
             Turreted = true,
             UseFiringSolutionInsteadOfAimBone = true,

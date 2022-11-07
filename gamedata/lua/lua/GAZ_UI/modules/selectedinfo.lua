@@ -23,9 +23,12 @@ if options.gui_enhanced_unitrings == 1 then
 end
 
 function GetUnitRolloverInfo(unit)
+
 	local info = {}
 
-	info.blueprintId = unit:GetBlueprint().BlueprintId
+    local bp = unit:GetBlueprint()
+
+	info.blueprintId = bp.BlueprintId
 
 	local econData = unit:GetEconData()
 
@@ -41,20 +44,23 @@ function GetUnitRolloverInfo(unit)
 	info.maxHealth = unit:GetMaxHealth()
 	info.health = unit:GetHealth()
 	info.fuelRatio = unit:GetFuelRatio()
+
 	info.shieldRatio = unit:GetShieldRatio()
-	info.workProgress = unit:GetWorkProgress()
+   
+    info.workProgress = unit:GetWorkProgress()
 
 	if unit:GetFocus() then
 		info.focus = GetUnitRolloverInfo(unit:GetFocus())
 	end
    
-	local killStat = unit:GetStat('KILLS')
-	info.kills = killStat.Value
+	info.kills = unit:GetStat('KILLS').Value
 
 	local missileInfo = unit:GetMissileInfo()
+
 	info.nukeSiloBuildCount = missileInfo.nukeSiloBuildCount 
 	info.nukeSiloMaxStorageCount = missileInfo.nukeSiloMaxStorageCount
 	info.nukeSiloStorageCount = missileInfo.nukeSiloStorageCount
+
 	info.tacticalSiloBuildCount = missileInfo.tacticalSiloBuildCount
 	info.tacticalSiloMaxStorageCount = missileInfo.tacticalSiloMaxStorageCount
 	info.tacticalSiloStorageCount = missileInfo.tacticalSiloStorageCount

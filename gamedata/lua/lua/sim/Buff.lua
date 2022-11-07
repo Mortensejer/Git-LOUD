@@ -24,6 +24,7 @@ local SetRegenRate = moho.unit_methods.SetRegenRate
 
 local SetAccMult = moho.unit_methods.SetAccMult
 local SetSpeedMult = moho.unit_methods.SetSpeedMult
+local SetStat = moho.unit_methods.SetStat
 local SetTurnMult = moho.unit_methods.SetTurnMult
 
 local SetBuildRate = moho.unit_methods.SetBuildRate
@@ -397,6 +398,10 @@ function BuffAffectUnit(unit, buffName, instigator, afterRemove)
             local val = BuffCalculate(unit, buffName, 'Regen', bpregn)
 
             SetRegenRate( unit, val )
+            
+            SetStat( unit, 'REGEN', val )
+            
+            unit.CurrentRegenRate = val
 
 			RequestRefreshUI(unit)
 
@@ -418,12 +423,21 @@ function BuffAffectUnit(unit, buffName, instigator, afterRemove)
             end
 
             SetRegenRate( unit, val )
+            
+            SetStat( unit, 'REGEN', val )
+            
+            unit.CurrentRegenRate = val
 
 			RequestRefreshUI(unit)
 
         elseif atype == 'MoveMult' then
 
             local val = BuffCalculate(unit, buffName, 'MoveMult', 1)
+
+            -- display new movement mult if it's not normal speed --
+            if unit.Sync.id and val != 1 then
+                ForkThread(FloatingEntityText, unit.Sync.id, 'Move Mult now '..math.floor((.001+val)*100).."%")
+			end
 
             SetSpeedMult( unit, val )
             SetAccMult( unit, val )
@@ -686,6 +700,8 @@ function BuffAffectUnit(unit, buffName, instigator, afterRemove)
 				local regenrate = __blueprints[unit.BlueprintID].Defense.Shield.ShieldRegenRate or 1
 
 				unit.MyShield:SetShieldRegenRate(val * regenrate)
+                
+                SetStat( unit, 'SHIELDREGEN', val * regenrate )
 			end
 
 		elseif atype == 'ShieldSize' then
@@ -715,6 +731,8 @@ function BuffAffectUnit(unit, buffName, instigator, afterRemove)
 				local shield = unit.MyShield
 
 				SetMaxHealth( shield, val * shieldhealth)
+
+                SetStat( unit, 'SHIELDHP', val * shieldhealth )
 
 				SetShieldRatio( shield.Owner, shield:GetHealth() / shield:GetMaxHealth() )
 

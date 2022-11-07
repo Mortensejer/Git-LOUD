@@ -350,9 +350,9 @@ function CreateScoreUI(parent)
     
     -- HUSSAR: increased board width to show more columns
     if sessionReplay then
-        boardWidth = 395 --340 -- 380  
+        boardWidth = 395
     else 
-        boardWidth = boardWidth + 40  --280
+        boardWidth = boardWidth + 40
     end    
     controls.bgTop.Width:Set(boardWidth + boardMargin)
     controls.bgBottom.Width:Set(boardWidth + boardMargin)
@@ -408,7 +408,7 @@ function CreateScoreUI(parent)
     controls.unitIcon:SetTexture(modTextures..'units.total.dds')
     Tooltip.AddControlTooltip(controls.units, str.tooltip('units_count'))
     Tooltip.AddControlTooltip(controls.unitIcon, str.tooltip('units_count'))
-	    
+
     SetLayout()
     
     controls.timeIcon.Height:Set(iconSize)
@@ -422,8 +422,9 @@ function CreateScoreUI(parent)
     
     controls.unitIcon.Height:Set(iconSize-3)
     controls.unitIcon.Width:Set(iconSize)
-       
+
     GameMain.AddBeatFunction(_OnBeat)
+    
     controls.bg.OnDestroy = function(self)
         GameMain.RemoveBeatFunction(_OnBeat)
     end
@@ -434,14 +435,19 @@ function CreateScoreUI(parent)
     
     controls.bg:SetNeedsFrameUpdate(true)
     controls.bg.OnFrame = function(self, delta)
+    
         local newRight = self.Right() + (1000*delta)
+        
         if newRight > savedParent.Right() + self.Width() then
             newRight = savedParent.Right() + self.Width()
             self:Hide()
             self:SetNeedsFrameUpdate(false)
         end
+        
         self.Right:Set(newRight)
+        
     end
+    
     controls.collapseArrow:SetCheck(true, true)
     
 end
@@ -457,14 +463,14 @@ function SetupPlayerLines()
     InitializeStats()
     
     local index = 1 -- counter of player/team lines
-     
+
     if not controls.armyLines then 
        controls.armyLines = {}
     end
 
     controls.armyLines[index] = CreateSortLine(100)  
     index = index + 1 
-     
+
     -- army lines always above team lines (armyId between 1 and 12+)
     for armyID, army in Stats.armies do
         if not army.civilian and army.showScore then 
@@ -526,9 +532,11 @@ function SetupPlayerLines()
         observerLine.speedSlider.OnValueChanged = function(self, newValue)
             observerLine.speedText:SetText(string.format("%+d", math.floor(tostring(newValue))))
         end
+        
         observerLine.speedSlider.OnValueSet = function(self, newValue)
             ConExecute("WLD_GameSpeed "..newValue)
         end
+        
         observerLine.speedSlider:SetValue(gameSpeed)
         observerLine.speedText:DisableHitTest()
     
@@ -542,10 +550,7 @@ function SetupPlayerLines()
         controls.armyLines[index] = observerLine 
         index = index + 1 
     end    
-      
-    --controls.armyLines[index] = CreateSeparatorLine(-100) 
-    --index = index + 1 
-        
+
     controls.armyLines[index] = CreateMapLine(-101)  
     controls.armyLines[index].isMapLine = true
     
@@ -687,11 +692,11 @@ function CreateArmyLine(armyID, army)
     local textColor = "FFFFFF"	--army.txtColor --textColorNickname
     --if isPlayerArmy then textColor = army.txtColor end
     --if isTeamArmy   then textColor = army.txtColor end
-      
+
     group.isArmyLine = isPlayerArmy
     group.isTeamLine = isTeamArmy
     group.armyID = armyID
-     
+
     group.faction = Bitmap(group)
     group.faction:SetTexture(GetArmyIcon(army.faction))
     group.faction.Height:Set(iconSize)
@@ -704,8 +709,9 @@ function CreateArmyLine(armyID, army)
     group.color.Depth:Set(function() return group.faction.Depth() - 1 end)
     group.color:DisableHitTest()
     LayoutHelpers.FillParent(group.color, group.faction)
-      
+
     position = position + iconSize + 1
+    
 -- Commented out by Tanksy. We don't need this. 
  -- create rating data column
 --    if army.rating and (isPlayerArmy or isTeamArmy) then
@@ -724,7 +730,7 @@ function CreateArmyLine(armyID, army)
 --        LayoutHelpers.AtVerticalCenterIn(group.rating, group)
 --        position = position + sw - 18 -- offset for rating text 12
 --    end
-            
+
     local armyName = army.namefull -- army.nameshort   
     
     group.nameColumn = UIUtil.CreateText(group, armyName, fontSize, fontName)
@@ -922,7 +928,7 @@ function CreateArmyLine(armyID, army)
         LayoutHelpers.AtRightIn(group.unitColumn, group, position)
         LayoutHelpers.AtVerticalCenterIn(group.unitColumn, group)
     end
-     
+
     --local groupHeight = iconSize + 2
     --if (isObserver) then groupHeight = groupHeight + 10 end
     
@@ -1962,6 +1968,7 @@ end
 
 -- update Stats of a player 
 function UpdatePlayerStats(armyID, armies, scoreData)
+
     local player = Stats.armies[armyID]
     
     if player == nil then
@@ -1978,11 +1985,13 @@ function UpdatePlayerStats(armyID, armies, scoreData)
 
     -- for dead/alive players, get only some score info 
     player.score = num.init(scoreData.general.score)
+    
     -- get player's eco Stats and initialize it to zero if nil score
     player.eco.massTotal  = num.init(scoreData.resources.massin.total)
     player.eco.massSpent  = num.init(scoreData.resources.massout.total)
     player.eco.engyTotal  = num.init(scoreData.resources.energyin.total)
     player.eco.engySpent  = num.init(scoreData.resources.energyout.total)
+    
     -- assuming FAF patch added reclaim values to score data
     player.eco.massReclaim  = num.init(scoreData.general.lastReclaimedMass)
     player.eco.engyReclaim  = num.init(scoreData.general.lastReclaimedEnergy)
@@ -1997,6 +2006,7 @@ function UpdatePlayerStats(armyID, armies, scoreData)
     player.kills.count = num.init(scoreData.general.kills.count)
     player.kills.mass  = num.init(scoreData.general.kills.mass)
     player.kills.engy  = num.init(scoreData.general.kills.energy)
+
     -- get player's loses Stats from score data and initialize it to zero if they are nil
     player.loses.acu   = num.init(scoreData.units.cdr.lost)
     player.loses.exp   = num.init(scoreData.units.experimental.lost)
@@ -2013,6 +2023,7 @@ function UpdatePlayerStats(armyID, armies, scoreData)
 
     -- dead players have not income and no units
     if player.dead then
+
         player.eco.massIncome = 0
         player.eco.engyIncome = 0
         
@@ -2024,9 +2035,12 @@ function UpdatePlayerStats(armyID, armies, scoreData)
         player.units.navy  = 0
         player.units.base  = 0
         player.units.land  = 0
+
     else
+
         player.eco.massIncome = num.init(scoreData.resources.massin.rate)   * 10 -- per game ticks
         player.eco.engyIncome = num.init(scoreData.resources.energyin.rate) * 10 -- per game ticks
+
         -- get player's units Stats from score data and initialize it to zero if nil score
         player.units.total = num.init(scoreData.general.currentunits.count)
         player.units.cap   = num.init(scoreData.general.currentcap.count)
@@ -2100,6 +2114,7 @@ function UpdateTeamStats(team, player)
         team.eco.engySpent   = team.eco.engySpent   + player.eco.engySpent
         team.eco.massReclaim = team.eco.massReclaim + player.eco.massReclaim
         team.eco.engyReclaim = team.eco.engyReclaim + player.eco.engyReclaim
+
         -- update team's kills Stats
         team.kills.acu   = team.kills.acu   + player.kills.acu
         team.kills.exp   = team.kills.exp   + player.kills.exp
@@ -2110,6 +2125,7 @@ function UpdateTeamStats(team, player)
         team.kills.count = team.kills.count + player.kills.count
         team.kills.mass  = team.kills.mass  + player.kills.mass
         team.kills.engy  = team.kills.engy  + player.kills.engy
+
         -- update team's kills Stats
         team.loses.acu   = team.loses.acu   + player.loses.acu
         team.loses.exp   = team.loses.exp   + player.loses.exp
@@ -2123,9 +2139,11 @@ function UpdateTeamStats(team, player)
         
         -- dead players have no income and no units
         if not player.dead then
+
             -- update team's eco
             team.eco.massIncome = team.eco.massIncome + player.eco.massIncome
             team.eco.engyIncome = team.eco.engyIncome + player.eco.engyIncome
+
             -- update team's units
             team.units.mass  = team.units.mass  + player.units.mass
             team.units.engy  = team.units.engy  + player.units.engy
@@ -2138,6 +2156,7 @@ function UpdateTeamStats(team, player)
             team.units.base  = team.units.base  + player.units.base
             team.units.land  = team.units.land  + player.units.land
         end
+
         -- sum team/player ratio values and then average them by alive players in OnBeat function
         team.ratio.killsToBuilt = team.ratio.killsToBuilt + player.ratio.killsToBuilt
         team.ratio.killsToLoses = team.ratio.killsToLoses + player.ratio.killsToLoses
